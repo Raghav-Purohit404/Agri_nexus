@@ -1,0 +1,3 @@
+{"_note":"Generated during blueprint creation by running the reference AquaCrop-OSPy package (Apache-2.0) on its bundled tunis_climate.txt. Soil=SandyLoam, Crop=Wheat planting 10/15, sim 1979/10/01-1985/05/30, initial water = field capacity. Use as regression targets (yield +/-3%, irrigation +/-5mm).",
+ "rainfed_dry_yield_t_ha_by_season":[8.930,8.393,9.139,8.776,8.710,8.913],
+ "smt70_all_stages_seasonal_irrigation_mm":[36.0,85.9,62.2,111.0,50.0,36.9]}

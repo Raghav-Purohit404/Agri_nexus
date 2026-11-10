@@ -1,0 +1,11 @@
+flowchart LR
+  W[weather + microclimate] --> ET[ET0]
+  ET --> SW[soil water + crop step]
+  IV[interventions] --> SW
+  SW --> SAL[salinity]
+  SW --> NUT[nutrients]
+  SAL -. one-day lag .-> SW
+  NUT -. one-day lag .-> SW
+  SW --> FIN[costs/revenue]
+  SW --> MON{month end}
+  MON --> C[RothC]

@@ -1,0 +1,14 @@
+"""
+FILE: farm_twin/agents/graph.py
+PURPOSE: The LangGraph StateGraph wiring all agents. Supervisor-worker pattern with deterministic edges where possible; LLM routing only where judgement is needed.
+
+IMPLEMENT with langgraph (StateGraph, START/END, Command for routing+state updates, Send for parallel fan-out, interrupt() for human approval, RetryPolicy on nodes with transient failures, PostgresSaver checkpointer):
+  nodes: intake -> supervisor -> {data_ingestion, data_quality, geospatial, soil_scientist, agronomist, water_engineer, solar_engineer, agrivoltaic_analyst, finance_analyst, risk_analyst, planner_optimizer, calibration_validator, explainer, governance} -> supervisor ... -> explainer -> END
+  SUPERVISOR: (1) classify request -> task plan from templates (deterministic, templates in agents/plans.yaml): e.g. PLAN_LANDUSE = [ensure_data_complete, quality_gate, soil_assessment, water_assessment, candidate_generation (crop/PV/agrivoltaic/reclaim options per plot), simulate_ensembles (parallel Send per plot-option), finance, risk, optimise, validation_check, explain, approval]; (2) dispatch tasks in dependency order, parallel where independent; (3) after each worker, evaluate: failed? missing data? -> may add a `ClarificationRequest` and PAUSE via interrupt() to ask the user; (4) enforce budget (max tool calls, wall-clock); (5) never answers science questions itself.
+  QUALITY GATE (conditional edge): if completeness_score < threshold for a required model -> do NOT proceed to optimisation; instead produce `what_is_missing` and VOI-ranked data requests; allow user to proceed with ESTIMATED inputs explicitly ('proceed with assumptions') -> run continues and every output carries the assumptions banner.
+  VALIDATION GATE before any recommendation is shown: checks calibration status of models used (validated vs placeholder/unvalidated) and attaches warnings; blocks `recommendation` for crops with placeholder parameters unless user acknowledged.
+  GOVERNANCE NODE: any proposed change to ACTUAL records/plans routes through interrupt() -> human approves/rejects/modifies; resume with Command(resume=decision); only then tools with approval requirement execute.
+  OBSERVABILITY: every node run logged (agent_run, tool_call); trace ids; LangSmith-compatible tracing optional; cost & latency counters.
+  DETERMINISM: temperature 0, tool outputs are the only source of numbers; a post-processing `groundedness_check` node verifies every number in the final answer maps to an EvidenceItem (regex + tolerance 1 %); failures trigger one regeneration then a plain refusal to state the number.
+TESTS: graph compiles; happy-path PLAN_LANDUSE on a fixture farm with a FAKE LLM (scripted tool calls) ; interrupt/resume round trip; failed tool -> supervisor adds clarification; budget exhaustion ends gracefully with partial results.
+"""

@@ -1,0 +1,14 @@
+flowchart TB
+  UI[UI mobile EN/HI] --> API[FastAPI]
+  API --> AG[LangGraph agents]
+  AG --> TL[Typed tool layer + approval gate]
+  TL --> ENG[FarmState engine]
+  ENG --> M1[ET0 + soil water]
+  ENG --> M2[Salinity / Nutrients / RothC]
+  ENG --> M3[Crop engine L1 / DSSAT L3 adapter]
+  ENG --> M4[PV + agrivoltaic ground radiation]
+  ENG --> M5[Finance]
+  TL --> OPT[Uncertainty + MILP CVaR + VOI]
+  TL --> CAL[Calibration + promotion gate]
+  ENG --> DB[(PostGIS)]
+  PROV[Weather/Soil/Market/Satellite providers] --> DB

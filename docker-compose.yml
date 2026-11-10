@@ -1,0 +1,48 @@
+# Codex: complete this. Services: postgis (postgis/postgis:16-3.4), api (uvicorn), worker (queue), ui (streamlit), optional dssat (built from upstream repo at a pinned tag).
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: farm_twin
+      POSTGRES_PASSWORD: farm_twin_local_dev
+      POSTGRES_DB: farm_twin
+    ports: ["5432:5432"]
+    volumes:
+      - farm_twin_postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U farm_twin -d farm_twin"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  api:
+    build: .
+    command: ["uvicorn", "farm_twin.api.runtime:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      FARM_TWIN_DB__URL: postgresql+psycopg://farm_twin:farm_twin_local_dev@db:5432/farm_twin
+      FARM_TWIN_SERVICE_FACTORY: ${FARM_TWIN_SERVICE_FACTORY:-}
+      FARM_TWIN_CORS_ORIGINS: ${FARM_TWIN_CORS_ORIGINS:-}
+    ports: ["8000:8000"]
+    depends_on:
+      db:
+        condition: service_healthy
+  worker:
+    build: .
+    command: ["python", "-m", "farm_twin.api.worker"]
+    environment:
+      FARM_TWIN_DB__URL: postgresql+psycopg://farm_twin:farm_twin_local_dev@db:5432/farm_twin
+      FARM_TWIN_WORKER_FACTORY: ${FARM_TWIN_WORKER_FACTORY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+  ui:
+    build: .
+    command: ["streamlit", "run", "farm_twin/ui/app_spec.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    environment:
+      FARM_TWIN_API_URL: http://api:8000/api/v1
+      FARM_TWIN_API_TOKEN: ${FARM_TWIN_API_TOKEN:-}
+    ports: ["8501:8501"]
+    depends_on:
+      - api
+
+volumes:
+  farm_twin_postgis_data:

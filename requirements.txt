@@ -1,0 +1,3 @@
+# Complete Edition 1 environment (Python 3.11 only).
+# For a smaller core-only environment install the project metadata with pip install -e .
+-e .[dev,validation,app,agents,planning,learning]

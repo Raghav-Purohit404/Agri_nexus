@@ -1,0 +1,21 @@
+"""
+FILE: farm_twin/models/agrivoltaic/ground_radiation.py
+PURPOSE: Radiation (and PAR) reaching the crop BENEATH and BETWEEN PV rows, per ground position and per hour. NEW MODULE - no existing open-source crop model supplies this; it is the bridge between the PV and crop engines.
+
+GEOMETRY (2-D cross-section perpendicular to row axis; infinite rows; x across rows, z up):
+  each row = a straight strip (collector) of slant width Wc, tilt beta, azimuth gamma_p; strip lower edge at height h0 (clearance), upper edge at h0 + Wc*sin(beta); horizontal projection w = Wc*cos(beta); repeats every pitch P.
+  ground sample points: x_k, k = 0..K-1 across one pitch (default dx = 0.10 m -> keep K <= 400 by capping resolution), ground point positions relative to the row axis.
+DIRECT BEAM SHADOW (per hour with sun elevation alpha > 2 deg):
+  sun vector s = (cos(alpha)*sin(azs), cos(alpha)*cos(azs), sin(alpha)) (E,N,Up). Row axis direction a = (sin(row_az), cos(row_az), 0). Work in the plane perpendicular to a: apparent profile angle of the sun in that plane  phi = atan2(s_perp_x, s_z) where s_perp_x is the component of s along the cross-row horizontal direction n = (cos(row_az), -sin(row_az), 0)... (Codex: derive and unit-test with brute-force 3-D ray casting on a few geometries; the 2-D profile-angle result must match ray casting within 1 % area.)
+  shadow of the collector strip's two edges on the ground plane: x_edge = x_edge_top - z_edge * tan(phi) ; shaded interval = [min, max] of the two projected edges (+ periodic copies at +/- P, +/- 2P ...). Ground point x_k is directly shaded if inside any copy interval -> beam transmittance tau_beam(x_k, t) = tau_panel (0 opaque; 0.0-0.5 semi-transparent / gaps between modules: ADD `module_gap_fraction`, effective tau = gap_fraction + (1-gap_fraction)*cell_transmittance).
+DIFFUSE SKY at ground point (isotropic sky approx, Level 1): sky view factor SVF(x_k) = 1 - sum_over_strips (sin(theta_2) - sin(theta_1))/2 where theta_1, theta_2 are the angles (from vertical, in the cross-row plane) subtended by each strip's two edges as seen from x_k, signed, restricted to the sky hemisphere; the 2-D result is exact for a horizontal receiver and infinite parallel strips. For anisotropic sky use circumsolar+horizon-brightening decomposition: Level 2 (document, not required).
+   Panel contribution: radiation transmitted through semi-transparent modules adds tau_diff*DHI*(portion).
+REFLECTED from ground between rows / from panels' underside: Level 1 ignores panel-underside emission; ground-to-ground reflection neglected; albedo effect included only for bifacial rear side (view factor ground->rear).
+GROUND GHI (per point, hour): G_g(x_k,t) = DNI*cos(zenith)*tau_beam(x_k,t) + DHI*SVF(x_k) [+ transmitted terms]. 
+PAR: PAR = f_par * G_g with f_par default 0.45 (0.43-0.50 range; flagged) - and spectral modification for semi-transparent PV via module PAR transmittance parameter.
+AGGREGATION: daily sums per position and per CROP STRIP (crops rows occupy specified x-intervals): radiation fraction Frad(x,day) = sum G_g / sum GHI_open ; mean over crop strip weighted by planting area. Output arrays [day, x_k]; store only the strip-averaged series plus the full profile for 5 representative days per season (for UI).
+EDGE EFFECTS & FIELD ENDS: finite-row length ignored L1 (document: plot of 6-12 m length has end effects; flag results as 'upper bound on shading' for rows shorter than 4*h0).
+CALIBRATION POINTS: user may upload PAR/lux-meter or ceptometer readings under panels (MEASURED) -> fit tau_eff and f_par by least squares; calibration module stores residuals.
+OUTPUT: GroundRadiation(frad_daily_by_strip, par_daily_by_strip_MJ_m2, shade_hours_by_position, svf_profile).
+VALIDATION: (1) no panels -> Frad = 1; (2) panel directly overhead at noon at beta=0 -> ground under panel fully shaded for beam; (3) energy sanity: area-averaged beam transmittance with opaque horizontal panel of width w and pitch P at sun overhead = 1 - w/P ; (4) SVF at the point beneath the center of a horizontal infinite strip of width 2a at height h = 1 - sin(atan(a/h)) (check formula = 1 - a/sqrt(a^2+h^2)); (5) brute-force ray-casting oracle test (tests/oracle_raycast.py).
+"""

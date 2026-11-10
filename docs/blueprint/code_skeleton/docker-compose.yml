@@ -1,0 +1,6 @@
+# Codex: complete this. Services: postgis (postgis/postgis:16-3.4), api (uvicorn), worker (queue), ui (streamlit), optional dssat (built from upstream repo at a pinned tag).
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment: {POSTGRES_USER: farm, POSTGRES_PASSWORD: farm, POSTGRES_DB: farmtwin}
+    ports: ["5432:5432"]

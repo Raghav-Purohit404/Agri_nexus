@@ -1,0 +1,9 @@
+flowchart LR
+  REC[recommendation + expected distribution] --> APP[human approval] --> EXE[execution] --> OUT[outcome]
+  OUT --> ERR[error attribution]
+  ERR --> CALB[candidate calibration]
+  CALB --> GATE{promotion gate}
+  GATE -->|better on held-out| ACT[ACTIVE params]
+  GATE -->|no| REJ[rejected]
+  ACT --> REC
+  ACT -. drift monitor .-> ROLL[rollback]

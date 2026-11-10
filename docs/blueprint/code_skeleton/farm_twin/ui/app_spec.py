@@ -1,0 +1,6 @@
+"""
+FILE: farm_twin/ui/app_spec.py
+PURPOSE: UI specification (build with Streamlit first for speed; React later if needed). Mobile-first (farmers use phones), English + Hindi, low-bandwidth friendly.
+PAGES: 1 Onboarding wizard (property, plots by map/dimensions/GeoJSON upload, water sources, capital, goals) ; 2 Data room (uploads, extracted-field confirmation table, quality issues, completeness meters per model, 'collect next' VOI ranking) ; 3 Plot dashboard (state, soil card with provenance badges: MEASURED/IMPORTED/ESTIMATED/PREDICTED/MISSING, canopy vs satellite, water balance) ; 4 Scenarios (build plan, run, compare with fan charts) ; 5 Decision board (Pareto frontier, allocation maps, decision stability, trade-offs in plain language) ; 6 Agent chat with inline approval cards ; 7 Learning (outcomes vs predictions, calibration decisions, 'is the twin improving?') ; 8 Reports export (PDF/Docx).
+UX RULES: every number shows unit + uncertainty band + provenance badge; MISSING shows a gap, never zero; model-validation banner ('unvalidated agrivoltaic model') cannot be dismissed on recommendation pages; approval is a distinct, confirm-twice action; offline-tolerant data entry (queue observations); units switchable (sq ft/m2, INR/lakh).
+"""

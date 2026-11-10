@@ -1,0 +1,11 @@
+[project]
+name = "farm-twin"
+version = "0.1.0"
+requires-python = ">=3.11"
+# Dependencies Codex should use (do not reimplement): numpy pandas scipy numba pydantic>=2 pydantic-settings sqlalchemy>=2 geoalchemy2 alembic psycopg[binary]
+# shapely pyproj geopandas rasterio xarray pint pyomo highspy emcee scikit-learn lightgbm pdfplumber pytesseract fastapi uvicorn httpx tenacity
+# langgraph langgraph-checkpoint-postgres langchain-core apscheduler streamlit pytest hypothesis testcontainers vcrpy
+# Optional/test-only: pvlib (cross-check PV), aquacrop (fixture extraction only, NOT runtime)
+dependencies = []
+[tool.pytest.ini_options]
+testpaths = ["tests"]

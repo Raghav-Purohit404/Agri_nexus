@@ -1,0 +1,2 @@
+# Agentic design
+Supervisor-worker LangGraph with 15 agents (intake, ingestion, quality, geospatial, soil, agronomy, water, solar, agrivoltaic, finance, risk, planner, calibration/validation, explainer, governance). LLMs plan and talk; tools compute. Interrupts for approvals and clarifications. Evidence ledger enforces grounding. Budgets cap tool calls/time. Details in code_skeleton/farm_twin/agents/*.py.

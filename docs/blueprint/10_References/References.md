@@ -1,0 +1,2 @@
+# References (to be confirmed by Codex when implementing; not all re-verified)
+FAO-56 Irrigation and Drainage Paper 56 (Allen et al. 1998); FAO Irrigation and Drainage Paper 29 (Ayers & Westcot); AquaCrop reference manual (FAO); Saxton & Rawls 2006; USDA Handbook 60 (Richards 1954); Coleman et al. RothC; Falloon et al. 1998; Perez et al. 1990; Erbs et al. 1982; Rockafellar & Uryasev 2000; Justes et al. 1994; Holmgren/Hottel view-factor methods; Saltelli et al. (Sobol); Homma-Saltelli/Jansen estimators.

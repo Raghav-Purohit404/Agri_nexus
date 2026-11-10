@@ -1,0 +1,4 @@
+{"_note":"1 kWp, tilt 26 deg south, albedo 0.25, Ineichen clear sky (library lookup turbidity), Perez transposition, SAPM open_rack_glass_glass, Tamb 30 C, wind 2 m/s, gamma -0.004, PVWatts inverter Pac0 1000 W. Site 26.2389N 73.0243E 231 m Asia/Kolkata. Daily kWh. Tolerances in pv_engine.py.",
+ "2026-03-21":{"ghi_kwh_m2":6.578,"poa_kwh_m2":7.4,"dc_kwh":6.515,"ac_kwh":6.254,"noon_zenith_deg":26.2},
+ "2026-06-21":{"ghi_kwh_m2":7.669,"poa_kwh_m2":6.828,"dc_kwh":6.097,"ac_kwh":5.848,"noon_zenith_deg":5.39},
+ "2026-12-21":{"ghi_kwh_m2":4.054,"poa_kwh_m2":6.078,"dc_kwh":5.41,"ac_kwh":5.198,"noon_zenith_deg":50.0}}

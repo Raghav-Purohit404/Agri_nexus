@@ -1,0 +1,7 @@
+"""
+FILE: farm_twin/optimization/multi_year.py
+PURPOSE: 10-year investment/timing problem (sequence of decisions), solved as multi-stage with scenario trees reduced to a manageable size; Level 1 approximation = rolling horizon with re-optimisation.
+IMPLEMENT: (1) capex timing: option 'install PV on plot A in year t' for t in 0..H (binary y[a,t]); budget by year with reinvestment of free cashflow (state variable cash_t tracked by scenario with linking constraints: cash_{t+1,s} = cash_{t,s} + CF_{t,s}(x,y) - repayments; cash_{t,s} >= 0 or borrowing at cost); non-anticipativity only for stage-1 decisions (here-and-now), later years decided by policy rules (e.g. install in year t if cash >= threshold) tested by simulation - the "decision rule" approach avoids a full scenario tree. (2) rolling horizon: at each annual review, update state with observed outcomes, re-run optimiser from that state (this is what the feedback loop does). (3) soil trajectory coupling: option payoffs depend on soil state at time t (reclamation first, then high-value crops) -> encode as option SEQUENCES (pre-simulated sequences of 3-5 years) rather than per-year binary decisions.
+OUTPUT: StagedPlan(year -> decisions, trigger rules, expected cash path quantiles, regret table vs hindsight).
+TESTS: with deterministic scenario the staged plan equals the simple NPV-optimal timing; non-anticipativity respected.
+"""

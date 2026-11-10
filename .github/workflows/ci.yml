@@ -1,0 +1,38 @@
+name: farm-twin-ci
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    services:
+      postgis:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: farm_twin
+          POSTGRES_PASSWORD: farm_twin_local_dev
+          POSTGRES_DB: farm_twin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U farm_twin -d farm_twin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://farm_twin:farm_twin_local_dev@localhost:5432/farm_twin
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev,validation,app,agents,planning]"
+      - run: python -m pip check
+      - run: ruff check farm_twin migrations tests/test_scientific_kernels.py tests/test_p09_p16_contracts.py tests/test_golden_pv.py
+      - run: mypy farm_twin migrations --show-error-codes
+      - run: pytest -q
+      - run: alembic upgrade head

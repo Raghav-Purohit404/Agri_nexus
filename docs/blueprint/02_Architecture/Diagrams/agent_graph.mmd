@@ -1,0 +1,14 @@
+flowchart TB
+  U[user] --> I[intake] --> S{supervisor}
+  S --> D[data ingestion] --> S
+  S --> Q[data quality] --> S
+  S --> SO[soil] --> S
+  S --> A[agronomist] --> S
+  S --> WA[water] --> S
+  S --> PV[solar + agrivoltaic] --> S
+  S --> F[finance] --> S
+  S --> R[risk] --> S
+  S --> P[planner/optimiser] --> S
+  S --> C[calibration/validation] --> S
+  S --> X[explainer] --> G{{governance interrupt}}
+  G -->|approved| E[execute tools]

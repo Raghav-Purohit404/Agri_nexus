@@ -1,0 +1,2 @@
+# What to collect first (ranked by typical value)
+1 Irrigation-water analysis (EC, SAR, Na, Ca, Mg, HCO3, B) 2 Soil: texture, EC (saturated paste), pH, OC, ESP/CEC, N/P/K, Zn/S by depth 0-15, 15-30, 30-60 cm 3 Well yield and depth to water 4 Plot dimensions/orientation/obstructions (trees, walls) 5 Local weather logger or at least rain gauge 6 Soil-moisture sensor at 2 depths on one plot 7 Past crop/yield history 8 Electricity tariff and bills 9 Price quotes from nearest mandi 10 PAR readings under any existing shade. Final ranking comes from voi.rank_measurements.
