@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Farm Digital Twin
 
 A Python-only scientific foundation for a hierarchical, region-independent farm digital twin. Source foundations span P01–P16; implementation, testing, integration, and scientific acceptance statuses are tracked separately and remain incomplete in several areas.
@@ -48,3 +49,6 @@ service factories, OIDC trust, secrets, allowed CORS origins, upload scanner,
 and model/provider adapters before exposing it to users. The implementation
 status and verification log distinguish code from tested, integrated, and
 scientifically validated functionality.
+=======
+# Agri_nexus
+>>>>>>> origin/main
