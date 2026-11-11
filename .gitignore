@@ -16,6 +16,12 @@ __pycache__/
 htmlcov/
 build/
 dist/
+node_modules/
+frontend/test-results/
+frontend/playwright-report/
+!frontend/artifacts/
+!frontend/artifacts/screens/
+!frontend/artifacts/screens/*.png
 
 # Secrets
 .env

@@ -1,0 +1,22 @@
+import { describe, expect, it } from 'vitest';
+import * as G from '../../src/geometry/geom';
+const rect=(w:number,h:number):G.Ring=>[[0,0],[w,0],[w,h],[0,h]];
+const Lshape:G.Ring=[[0,0],[30,0],[30,10],[10,10],[10,30],[0,30]];
+const irregular:G.Ring=[[0,0],[40,5],[45,30],[20,40],[-5,28]];
+describe('Appendix A reference geometry',()=>{
+ it('areas',()=>{expect(G.ringArea(rect(20,40))).toBe(800);expect(Math.abs(G.ringArea(Lshape))).toBe(500)});
+ it('sqft/sqm',()=>expect(Math.abs(800/G.SQFT_PER_SQM-74.3224)).toBeLessThan(1e-3));
+ for(const [name,ring] of [['rect 20x40',rect(20,40)],['L-shape',Lshape],['irregular',irregular]] as const)it(`partition exact ${name}`,()=>{const total=Math.abs(G.ringArea(ring)),areas=[.5*total,.3*total,.2*total],got=G.partitionByAreas(ring,areas).map(G.mpArea);got.forEach((n,i)=>expect(Math.abs(n-areas[i]!)).toBeLessThan(1e-3));expect(Math.abs(got.reduce((a,b)=>a+b)-total)).toBeLessThan(1e-3)});
+ it('partition rect into exact ordered areas',()=>expect(G.partitionByAreas(rect(20,40),[400,240,160]).map(p=>Math.round(G.mpArea(p)))).toEqual([400,240,160]));
+ it('drip rows on rect',()=>{const {rows,totalLength}=G.dripRows(G.toMP(rect(20,40)),2,0,.5);expect(rows.length).toBeGreaterThan(0);expect(Math.abs(rows[0]![1][0]-rows[0]![0][0]-19)).toBeLessThan(1e-6);expect(Math.abs(totalLength-rows.length*19)).toBeLessThan(1e-6)});
+ it('drip rows respect L concavity',()=>{for(const [p,q] of G.dripRows(G.toMP(Lshape),1.5,0,.4).rows){const mid=[(p[0]+q[0])/2,(p[1]+q[1])/2];expect(mid[0]).toBeLessThanOrEqual(30);expect(mid[1]).toBeLessThanOrEqual(30);if(mid[1]!>10)expect(q[0]).toBeLessThanOrEqual(9.6+1e-9)}});
+ it('emitter counts',()=>{expect(G.emittersFor(57,1)).toBe(57);expect(G.emittersFor(57,1.5)).toBe(38)});
+ it('point in ring and multipolygon',()=>{expect(G.pointInRing([5,5],rect(10,10))).toBe(true);expect(G.pointInRing([15,5],rect(10,10))).toBe(false);expect(G.pointInRing([20,20],Lshape)).toBe(false);expect(G.pointInRing([5,20],Lshape)).toBe(true)});
+ it('snap',()=>{expect(G.snap(3.4,.5)).toBe(3.5);expect(G.snap(3.4,0)).toBe(3.4)});
+ it('paint steals overlapping area, clips and conserves',()=>{const plot=G.toMP(rect(20,40));let z:G.PaintZone[]=[];z=G.paintRegion(plot,z,[[0,0],[20,0],[20,20],[0,20]],{id:'A',kind:'crop',cropId:'wheat',mp:[]});z=G.paintRegion(plot,z,[[0,10],[20,10],[20,60],[0,60]],{id:'B',kind:'crop',cropId:'mustard',mp:[]});const s=G.summarize(plot,z);expect(Math.abs(s.rows.find(r=>r.id==='A')!.areaSqft-200)).toBeLessThan(1e-6);expect(Math.abs(s.rows.find(r=>r.id==='B')!.areaSqft-600)).toBeLessThan(1e-6);expect(Math.abs(s.unassignedSqft)).toBeLessThan(1e-6);expect(s.plotSqft).toBe(800)});
+ it('paint merges into the same zone',()=>{const plot=G.toMP(rect(20,40));let z:G.PaintZone[]=[];z=G.paintRegion(plot,z,[[0,0],[10,0],[10,10],[0,10]],{id:'A',kind:'crop',cropId:'wheat',mp:[]});z=G.paintRegion(plot,z,[[10,0],[20,0],[20,10],[10,10]],{id:'A',kind:'crop',cropId:'wheat',mp:[]});expect(z).toHaveLength(1);expect(G.mpArea(z[0]!.mp)).toBeCloseTo(200,6)});
+ it('zone irrigation rows respond to zone area',()=>{const parts=G.partitionByAreas(rect(20,40),[200,600]);const a=G.dripRows(parts[0]!,2,0,.5).totalLength,b=G.dripRows(parts[1]!,2,0,.5).totalLength;expect(b).toBeGreaterThan(2.5*a)});
+ it('locked zone leaves exact partitionable remainder',()=>{const plot=G.toMP(rect(20,40));const z=G.paintRegion(plot,[],[[0,0],[20,0],[20,10],[0,10]],{id:'LOCK',kind:'crop',mp:[]});const rest=G.unassignedMP(plot,z);expect(G.mpArea(rest)).toBeCloseTo(600,6);const got=G.partitionMP(rest,[450,150],G.longestEdgeAngle(rect(20,40))).map(G.mpArea);expect(got[0]).toBeCloseTo(450,3);expect(got[1]).toBeCloseTo(150,3)});
+ it('split, poly label and polygon validation',()=>{const [a,b]=G.splitAt(G.toMP(Lshape),0,10);expect(G.mpArea(a)+G.mpArea(b)).toBeCloseTo(500,6);expect(G.pointInMP(G.labelPoint(G.toMP(Lshape)),G.toMP(Lshape))).toBe(true);expect(G.validateRing([[0,0],[2,2],[0,2],[2,0]]).length).toBeGreaterThan(0);expect(G.validateRing(Lshape)).toEqual([])});
+ it('200 seeded rectangular area partitions conserve requested area',()=>{let seed=421;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};for(let i=0;i<200;i++){const total=100+random()*5000,w=2+random()*60,h=total/w,ratios=[random()+.1,random()+.1,random()+.1],sum=ratios.reduce((a,b)=>a+b),areas=ratios.map(x=>x/sum*total),parts=G.partitionByAreas(rect(w,h),areas);expect(parts.map(G.mpArea).every((n,j)=>Math.abs(n-areas[j]!)<1e-3)).toBe(true)}});
+});

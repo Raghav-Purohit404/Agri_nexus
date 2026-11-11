@@ -46,3 +46,29 @@ No GPL-licensed source was vendored. Verify exact license metadata, transitive d
 | emcee | 3.1.6 | MIT | Affine-invariant ensemble MCMC calibration | Optional (`learning`) |
 | scikit-learn | 1.9.1 | BSD-3-Clause | Selected calibration diagnostics and future baseline models | Optional (`learning`) |
 | LightGBM | 4.7.0 | MIT | Shallow tree residual corrector | Optional (`learning`); residual model is a candidate only |
+
+## Plot planner frontend
+
+The inventory below covers direct frontend dependencies. Transitive packages are locked in `frontend/pnpm-lock.yaml`; run `pnpm licenses list` in `frontend/` to inspect the complete installed tree.
+
+| Package | Version | Licence | Purpose | Status |
+|---|---:|---|---|---|
+| React | 19.2.0 | MIT | Interactive UI rendering | Mandatory |
+| React DOM | 19.2.0 | MIT | Browser rendering | Mandatory |
+| Zustand | 5.0.8 | MIT | UI state and undo/redo history | Mandatory |
+| polygon-clipping | 0.15.7 | MIT | Frontend plot-shape boolean operations | Mandatory |
+| Vite | 7.1.12 | MIT | Frontend dev server and production bundling | Development |
+| TypeScript | 5.9.3 | Apache-2.0 | Strict type checking | Development |
+| Vitest | 5.1.0 | MIT | Unit tests | Development |
+| Playwright | 1.65.0 | Apache-2.0 | Browser automation | Development |
+| @axe-core/playwright | 4.10.2 | MPL-2.0 | Accessibility checks | Development |
+| @testing-library/react | 16.3.0 | MIT | UI component tests | Development |
+| @testing-library/user-event | 14.6.1 | MIT | UI event simulation | Development |
+| @testing-library/jest-dom | 6.9.1 | MIT | DOM assertions | Development |
+| jsdom | 27.0.1 | MIT | DOM test environment | Development |
+| tsx | 4.20.6 | MIT | Run the TypeScript demo API fixture | Development |
+| @types/geojson | 7946.0.16 | MIT | GeoJSON type definitions | Development |
+| @types/node | 24.7.2 | MIT | Node API type definitions | Development |
+| @types/react | 19.2.2 | MIT | React type definitions | Development |
+| @types/react-dom | 19.2.2 | MIT | React DOM type definitions | Development |
+| @vitejs/plugin-react | 5.0.4 | MIT | React transform for Vite | Development |

@@ -28,3 +28,6 @@
 - Corrected the quality endpoint to avoid treating every registered variable as a requirement and fixed recommendation audit before-state capture.
 - No tests, lint, type checks, migrations, container builds, or DB operations were run during this coding pass.
 
+# Unreleased
+
+- Added a responsive React/TypeScript plot planner UI with polygon editing foundations, SVG layout, zone locking, undo/redo, drip overlays, explanation panels, and fixture API boundary. The planner demo is explicitly synthetic; see `frontend/RESULT.md` for tested functionality and open items.

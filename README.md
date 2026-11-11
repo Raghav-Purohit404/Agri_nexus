@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 # Farm Digital Twin
 
-A Python-only scientific foundation for a hierarchical, region-independent farm digital twin. Source foundations span P01–P16; implementation, testing, integration, and scientific acceptance statuses are tracked separately and remain incomplete in several areas.
+A Python scientific foundation for a hierarchical, region-independent farm digital twin, with an optional React/TypeScript plot-planner client. Source foundations span P01–P16; implementation, testing, integration, and scientific acceptance statuses are tracked separately and remain incomplete in several areas.
 
 ## Runtime
 
@@ -23,10 +22,10 @@ Exact direct dependency pins are in `pyproject.toml`; a purpose and license inve
 
 ## Tests
 
-Run `python -m pytest` from the project root after installing the `dev` extra. Previously recorded results predate this coding pass; no checks were run on the latest changes. Golden fixtures are retained unchanged; see the verification log for known unresolved reference mismatches.
+Run `python -m pytest` from the project root after installing the `dev` extra. The Python science modules were not changed in this frontend pass; see the verification log for previously recorded results and known reference mismatches. Golden fixtures are retained unchanged; see the verification log for known unresolved reference mismatches.
 # Runtime entry points
 
-The project is Python-only. Install the complete pinned Edition 1 environment
+The scientific engine, domain logic, and API are Python. The optional plot-planner UI is React/TypeScript and calls a versioned API contract. Install the complete pinned Edition 1 environment
 with `python -m pip install -r requirements.txt` in CPython 3.11. The editable
 project metadata and optional extras are the source of truth for dependency
 versions; `docs/dependency_inventory.md` records purpose and licence.
@@ -49,6 +48,7 @@ service factories, OIDC trust, secrets, allowed CORS origins, upload scanner,
 and model/provider adapters before exposing it to users. The implementation
 status and verification log distinguish code from tested, integrated, and
 scientifically validated functionality.
-=======
-# Agri_nexus
->>>>>>> origin/main
+# Interactive plot planner
+
+The new responsive browser planner is in [`frontend/`](frontend/RESULT.md). It is a React/TypeScript presentation client; the farm science and domain logic remain in the Python application. Start the synthetic development API and Vite UI in separate terminals from `frontend/` with `pnpm mock` and `pnpm dev`. The mock uses sample geometries only and does not run scientific models or optimize a real property. Open `http://localhost:5173/?demo=sample` to see the labeled sample layout. See the result report for verification and feature limits.
+
